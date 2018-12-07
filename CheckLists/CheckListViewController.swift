@@ -10,11 +10,8 @@ import UIKit
 
 class CheckListViewController:UITableViewController, ItemDetailViewControllerDelegate {
 
-//    var items: [CheckListItem]
     var checklist: CheckList!
-    
-    
-
+ 
     //MARK: - initializier
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,10 +19,13 @@ class CheckListViewController:UITableViewController, ItemDetailViewControllerDel
         title = checklist.name
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.reloadData()
+    }
+    
     required init?(coder aDecoder: NSCoder) {
-        
         super.init(coder:aDecoder)
-//        loadCheckListItems()
     }
     
     
@@ -35,34 +35,16 @@ class CheckListViewController:UITableViewController, ItemDetailViewControllerDel
     }
     
     func itemDetailViewController(controller: ItemDetailViewController, didFinishAddingItem item: CheckListItem) {
-        let newRowIndex = checklist.items.count
         checklist.items.append(item)
-        
-        let indexPath = NSIndexPath(row: newRowIndex, section: 0)
-        let indexPaths = [indexPath]
-        tableView.insertRows(at: indexPaths as [IndexPath], with: .automatic)
-        
+        checklist.sort()
+        tableView.reloadData()
         dismiss(animated: true, completion: nil)
-        
-//        saveCheckListItems()
-        
     }
     
     func itemDetailViewController(controller: ItemDetailViewController, didFinishEditingItem item: CheckListItem){
-  
-        if let index = checklist.items.firstIndex(of: item) {
-            
-            let indexPath = NSIndexPath(row: index, section: 0)
-            
-            if let cell = tableView.cellForRow(at: indexPath as IndexPath){
-                configureTextForCell(cell: cell, withTextItem: item)
-            }
-            
-            dismiss(animated: true, completion: nil)
-                
-        }
-        
-//        saveCheckListItems()
+        checklist.sort()
+        tableView.reloadData()
+        dismiss(animated: true, completion: nil)
     }
     
     // MARK: - Table method delegate
@@ -90,8 +72,6 @@ class CheckListViewController:UITableViewController, ItemDetailViewControllerDel
             configureCheckmarkForCell(cell: cell, withCheckListItem: item)
         }
         tableView.deselectRow(at: indexPath, animated: true)
-        
-//        saveCheckListItems()
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
@@ -99,8 +79,6 @@ class CheckListViewController:UITableViewController, ItemDetailViewControllerDel
         checklist.items.remove(at: indexPath.row)
         let indexPaths = [indexPath]
         tableView.deleteRows(at: indexPaths, with: .automatic)
-        
-//        saveCheckListItems()
     }
     
     //MARK: - segue
@@ -140,6 +118,7 @@ class CheckListViewController:UITableViewController, ItemDetailViewControllerDel
     func configureTextForCell(cell:UITableViewCell, withTextItem item:CheckListItem){
         let label = cell.viewWithTag(100) as! UILabel
         label.text = item.text
+//        label.text = "\(item.itemID): \(item.text)"
     }
    
 }

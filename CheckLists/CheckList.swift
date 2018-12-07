@@ -10,21 +10,29 @@ import UIKit
 
 class CheckList: NSObject, NSCoding {
     
+    var name = ""
+    var items = [CheckListItem]()
+    var iconName:String
+    
     func encode(with aCoder: NSCoder) {
         aCoder.encode(name, forKey: "Name")
         aCoder.encode(items, forKey: "Items")
+        aCoder.encode(iconName, forKey: "IconName")
     }
     
     required init?(coder aDecoder: NSCoder) {
         name = aDecoder.decodeObject(forKey: "Name") as! String
         items = aDecoder.decodeObject(forKey: "Items") as! [CheckListItem]
+        iconName = aDecoder.decodeObject(forKey: "IconName") as! String
     }
     
-    var name = ""
-    var items = [CheckListItem]()
+    convenience init(name: String) {
+        self.init(name: name, iconName: "No Icon")
+    }
     
-    init(name: String){
+    init(name:String, iconName:String){
         self.name = name
+        self.iconName = iconName
         super.init()
     }
     
@@ -37,4 +45,11 @@ class CheckList: NSObject, NSCoding {
         }
         return count
     }
+    
+    func sort(){
+        items.sort(by: {items1, items2 in return
+            items1.text.localizedStandardCompare(items2.text) == ComparisonResult.orderedAscending
+        })
+    }
+    
 }

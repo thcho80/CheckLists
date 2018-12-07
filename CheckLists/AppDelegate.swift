@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import UserNotifications
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -20,6 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let controller = navigationController.viewControllers[0] as! AllListsViewController
         controller.dataModel = dataModel
         
+
         return true
     }
 
@@ -48,6 +50,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("Saving result: \(dataModel.saveChanges())")
     }
 
-
+//
+//    func application(_ application:UIApplication, didReceive notification:UILocalNotification){
+//        print(#function)
+//        print("\(notification)")
+//    }
 }
 

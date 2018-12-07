@@ -26,7 +26,7 @@ class DataModel {
         let documentsDirectoryes = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         let documentDirectory = documentsDirectoryes.first!
         
-        return documentDirectory.appendingPathComponent("checklists_new.archive") as NSURL
+        return documentDirectory.appendingPathComponent("checklists8800.archive") as NSURL
     }()
     
     var indexOfSelectedChecklist: Int{
@@ -67,13 +67,14 @@ class DataModel {
     }
     
     func registerDefaults(){
-        let dictionary:[String:Any] = ["ChecklistIndex": -1, "FirstTime": true]
+        let dictionary:[String:Any] = ["ChecklistIndex": -1, "FirstTime": true, "ChecklistItemID": 0]
         UserDefaults.standard.register(defaults: dictionary)
     }
     
     func handleFirstTime(){
         let userDefaults = UserDefaults.standard
         let firstTime = userDefaults.bool(forKey: "FirstTime")
+
         if firstTime {
             let checklist = CheckList(name: "List")
             lists.append(checklist)
@@ -82,5 +83,18 @@ class DataModel {
         }
     }
     
+    func sortChecklists(){
+        lists.sort(by: {checklist1, checklist2 in return
+            checklist1.name.localizedStandardCompare(checklist2.name) == ComparisonResult.orderedAscending
+        })
+    }
     
+    class func nextChecklistItemID() -> Int {
+        let userDefaults = UserDefaults.standard
+        let itemID = userDefaults.integer(forKey: "ChecklistItemID")
+        userDefaults.set(itemID + 1, forKey: "ChecklistItemID")
+        userDefaults.synchronize()
+        
+        return itemID
+    }
 }
